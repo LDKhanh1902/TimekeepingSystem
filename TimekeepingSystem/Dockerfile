@@ -10,7 +10,7 @@ EXPOSE 10000
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["TimekeepingSystem/TimekeepingSystem.csproj", "TimekeepingSystem/"]
+COPY ["TimekeepingSystem/TimekeepingSystem/TimekeepingSystem.csproj", "TimekeepingSystem/"]
 RUN dotnet restore "./TimekeepingSystem/TimekeepingSystem.csproj"
 COPY . .
 WORKDIR "/src/TimekeepingSystem"
