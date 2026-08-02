@@ -1,0 +1,69 @@
+@model User
+@{
+    ViewData["Title"] = "Hồ sơ";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-person-badge"></i> Hồ sơ nhân viên</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <div style="font-size: 4rem; color: #667eea;">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <h4>@Model.FullName</h4>
+                    <span class="badge bg-primary">@@@Model.Username</span>
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success">Hoạt động</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Không hoạt động</span>
+                    }
+                </div>
+
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width: 200px;" class="table-light">Mã nhân viên</th>
+                            <td>#@Model.Id</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light">Họ và tên</th>
+                            <td>@Model.FullName</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light">Số điện thoại</th>
+                            <td>@(Model.Phone ?? "-")</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light">Email</th>
+                            <td>@(Model.Email ?? "-")</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light">Địa chỉ</th>
+                            <td>@(Model.Address ?? "-")</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light">Lương cơ bản</th>
+                            <td>@Model.BaseSalary.ToString("N0") ₫/tháng</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light">Lương theo ca</th>
+                            <td>@Model.SalaryPerShift.ToString("N0") ₫/ca</td>
+                        </tr>
+                        <tr>
+                            <th class="table-light">Ngày tham gia</th>
+                            <td>@Model.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

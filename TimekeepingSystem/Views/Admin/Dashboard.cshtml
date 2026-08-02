@@ -1,0 +1,138 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-dark text-white">
+            <div class="card-body text-center py-4">
+                <h3><i class="bi bi-shield-lock"></i> Bảng điều khiển Admin</h3>
+                <p class="mb-0">Quản lý chấm công - @DateTime.Today.ToString("dd/MM/yyyy")</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 col-6 mb-3">
+        <div class="card border-primary h-100">
+            <div class="card-body text-center">
+                <h2 class="text-primary mb-0">@Model.TotalWorkers</h2>
+                <small class="text-muted">Tổng công nhân</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <h2 class="text-success mb-0">@Model.TotalPresentsToday</h2>
+                <small class="text-muted">Đi làm hôm nay</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="card border-warning h-100">
+            <div class="card-body text-center">
+                <h2 class="text-warning mb-0">@Model.TotalLatesToday</h2>
+                <small class="text-muted">Đi muộn hôm nay</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+        <div class="card border-danger h-100">
+            <div class="card-body text-center">
+                <h2 class="text-danger mb-0">@Model.TotalAbsentsToday</h2>
+                <small class="text-muted">Vắng hôm nay</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-list-check"></i> Chấm công hôm nay</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Công nhân</th>
+                                <th>Ca</th>
+                                <th>Giờ vào</th>
+                                <th>Trạng thái</th>
+                                <th>Ghi chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.TodayAttendances.Any())
+                            {
+                                @foreach (var item in Model.TodayAttendances)
+                                {
+                                    <tr>
+                                        <td>@item.User?.FullName</td>
+                                        <td>@item.Shift?.Name</td>
+                                        <td>@(item.CheckIn?.ToString("HH:mm") ?? "-")</td>
+                                        <td>
+                                            @switch (item.Status)
+                                            {
+                                                case "Present": <span class="badge bg-success">Có mặt</span>; break;
+                                                case "Late": <span class="badge bg-warning text-dark">Muộn</span>; break;
+                                                default: <span class="badge bg-secondary">@item.Status</span>; break;
+                                            }
+                                        </td>
+                                        <td>@(item.Notes ?? "-")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox"></i> Hôm nay chưa có dữ liệu chấm công.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-people"></i> Danh sách công nhân</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    @foreach (var worker in Model.Workers)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>@worker.FullName</strong><br/>
+                                <small class="text-muted">@worker.Phone</small>
+                            </div>
+                            <a asp-action="WorkerAttendance" asp-route-id="@worker.Id" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-action="Workers" class="btn btn-primary btn-sm">
+                    <i class="bi bi-list"></i> Xem tất cả
+                </a>
+                <a asp-action="MonthlyAttendance" class="btn btn-info btn-sm text-white">
+                    <i class="bi bi-grid-3x3-gap-fill"></i> Bảng chấm công
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+

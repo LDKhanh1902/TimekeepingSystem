@@ -1,0 +1,191 @@
+@model SalarySlipViewModel
+@{
+    ViewData["Title"] = $"Phiếu lương - {Model.User?.FullName} - Tháng {Model.Month}/{Model.Year}";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card mb-4" id="printArea">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-cash-stack"></i> PHIẾU LƯƠNG</h4>
+                <span>Tháng @Model.Month/@Model.Year</span>
+            </div>
+            <div class="card-body">
+                <div class="row border-bottom pb-3 mb-3">
+                    <div class="col-md-6">
+                        <table class="table-sm">
+                            <tr><td class="fw-bold pe-3">Họ tên:</td><td>@Model.User?.FullName</td></tr>
+                            <tr><td class="fw-bold pe-3">Mã số:</td><td>#@Model.User?.Id</td></tr>
+                            <tr><td class="fw-bold pe-3">Số điện thoại:</td><td>@(Model.User?.Phone ?? "-")</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table-sm">
+                            <tr><td class="fw-bold pe-3">Lương cơ bản:</td><td>@Model.BaseSalary.ToString("N0") ₫/tháng</td></tr>
+                            <tr><td class="fw-bold pe-3">Lương 1 ngày:</td><td>@Model.DailySalary.ToString("N0") ₫</td></tr>
+                            <tr><td class="fw-bold pe-3">Số ngày công quy định:</td><td>@Model.TotalWorkingDays ngày</td></tr>
+                            <tr><td class="fw-bold pe-3">Địa chỉ:</td><td>@(Model.User?.Address ?? "-")</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Chỉ tiêu</th>
+                                    <th class="text-center">Số ngày</th>
+                                    <th class="text-center">Đơn giá</th>
+                                    <th class="text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Đi làm (Có mặt + Muộn)</td>
+                                    <td class="text-center">@Model.DaysWorked.ToString("0.#")</td>
+                                    <td class="text-center">@Model.DailySalary.ToString("N0") ₫</td>
+                                    <td class="text-end">@((Model.DaysWorked * Model.DailySalary).ToString("N0")) ₫</td>
+                                </tr>
+                                <tr>
+                                    <td>Trong đó: Nửa ngày</td>
+                                    <td class="text-center">@Model.HalfDays</td>
+                                    <td class="text-center">@((Model.DailySalary / 2).ToString("N0")) ₫</td>
+                                    <td class="text-end">@((Model.HalfDays * Model.DailySalary / 2).ToString("N0")) ₫</td>
+                                </tr>
+                                <tr class="table-danger">
+                                    <td>Vắng không lương</td>
+                                    <td class="text-center">@Model.AbsentDays</td>
+                                    <td class="text-center">-@Model.DailySalary.ToString("N0") ₫</td>
+                                    <td class="text-end">-@((Model.AbsentDays * Model.DailySalary).ToString("N0")) ₫</td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="3" class="fw-bold text-end">Lương cơ bản (ngày công):</td>
+                                    <td class="text-end fw-bold">@Model.GrossSalary.ToString("N0") ₫</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Phụ cấp & Tăng ca</th>
+                                    <th class="text-end">Số tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Chuyên cần (đi đủ @Model.TotalWorkingDays ngày)</td>
+                                    <td class="text-end">@Model.ChuyenCanBonus.ToString("N0") ₫</td>
+                                </tr>
+                                <tr>
+                                    <td>Phụ cấp trách nhiệm</td>
+                                    <td class="text-end">@Model.TrachNhiemBonus.ToString("N0") ₫</td>
+                                </tr>
+                                <tr>
+                                    <td>Tăng ca (@Model.TotalOvertimeHours.ToString("0.#") giờ × @((Model.DailySalary / 8m * 1.5m).ToString("N0")) ₫/giờ)</td>
+                                    <td class="text-end">@Model.OvertimePay.ToString("N0") ₫</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tfoot class="table-info">
+                                <tr>
+                                    <td colspan="2" class="fw-bold text-end">Tổng lương:</td>
+                                    <td class="text-end fw-bold">@((Model.GrossSalary + Model.ChuyenCanBonus + Model.TrachNhiemBonus + Model.OvertimePay).ToString("N0")) ₫</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="fw-bold text-end text-danger">Khấu trừ:</td>
+                                    <td class="text-end fw-bold text-danger">-@Model.Deductions.ToString("N0") ₫</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="fw-bold text-end" style="font-size: 1.2em;">THỰC LĨNH:</td>
+                                    <td class="text-end fw-bold text-success" style="font-size: 1.2em;">@Model.NetSalary.ToString("N0") ₫</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                @if (Model.Attendances.Any())
+                {
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="fw-bold">Chi tiết chấm công:</h6>
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Ngày</th>
+                                        <th>Ca</th>
+                                        <th>Giờ vào</th>
+                                        <th>Giờ ra</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Attendances)
+                                    {
+                                        <tr>
+                                            <td>@item.Date.ToString("dd/MM")</td>
+                                            <td>@item.Shift?.Name</td>
+                                            <td>@(item.CheckIn?.ToString("HH:mm") ?? "-")</td>
+                                            <td>@(item.CheckOut?.ToString("HH:mm") ?? "-")</td>
+                                            <td>
+                                                @switch (item.Status)
+                                                {
+                                                    case "Present": <span class="badge bg-success">OK</span>; break;
+                                                    case "Late": <span class="badge bg-warning text-dark">Muộn</span>; break;
+                                                    case "Absent": <span class="badge bg-danger">Vắng</span>; break;
+                                                    case "HalfDay": <span class="badge bg-info">1/2</span>; break;
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+
+                <div class="row mt-4">
+                    <div class="col-md-4 text-center">
+                        <p class="fw-bold mb-5">Người lập phiếu</p>
+                        <p>(Ký, họ tên)</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <p class="fw-bold mb-5">Người nhận lương</p>
+                        <p>(Ký, họ tên)</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <p class="fw-bold mb-5">@Model.User?.FullName</p>
+                        <p>Ngày @DateTime.Now.ToString("dd/MM/yyyy")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mb-4">
+            <a asp-action="WorkerAttendance" asp-route-id="@Model.User?.Id" asp-route-month="@Model.Month" asp-route-year="@Model.Year" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Quay lại chấm công
+            </a>
+            <button onclick="window.print()" class="btn btn-success">
+                <i class="bi bi-printer-fill"></i> In phiếu lương
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        @@media print {
+            .btn, .navbar, footer, .container > .alert { display: none !important; }
+            .card { border: none !important; box-shadow: none !important; }
+            .card-header { background: #0d6efd !important; color: white !important; }
+            .table { border: 1px solid #000 !important; }
+        }
+    </style>
+}
+

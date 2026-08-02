@@ -1,0 +1,152 @@
+@model AttendanceViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var todayAttendance = ViewBag.TodayAttendance as Attendance;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center py-4">
+                <h3><i class="bi bi-person-badge"></i> Xin chào, @Model.User?.FullName</h3>
+                <p class="mb-0">@DateTime.Now.ToString("dddd, dd/MM/yyyy", new System.Globalization.CultureInfo("vi-VN"))</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <h2 class="text-success mb-0">@Model.PresentCount</h2>
+                <small class="text-muted">Có mặt tháng này</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card border-warning h-100">
+            <div class="card-body text-center">
+                <h2 class="text-warning mb-0">@Model.LateCount</h2>
+                <small class="text-muted">Đi muộn</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card border-danger h-100">
+            <div class="card-body text-center">
+                <h2 class="text-danger mb-0">@Model.AbsentCount</h2>
+                <small class="text-muted">Vắng</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3 mb-3">
+        <div class="card border-primary h-100">
+            <div class="card-body text-center">
+                <h2 class="text-primary mb-0">@Model.TotalSalary.ToString("N0")</h2>
+                <small class="text-muted">Lương tạm tính</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-list-check"></i> Chấm công gần đây</h5>
+                <a asp-action="Attendance" class="btn btn-light btn-sm">Xem tất cả</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Ca</th>
+                                <th>Giờ vào</th>
+                                <th>Giờ ra</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Attendances.Take(7))
+                            {
+                                <tr>
+                                    <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.Shift?.Name</td>
+                                    <td>@(item.CheckIn?.ToString("HH:mm") ?? "-")</td>
+                                    <td>@(item.CheckOut?.ToString("HH:mm") ?? "-")</td>
+                                    <td>
+                                        @switch (item.Status)
+                                        {
+                                            case "Present": <span class="badge bg-success">Có mặt</span>; break;
+                                            case "Late": <span class="badge bg-warning text-dark">Muộn</span>; break;
+                                            case "Absent": <span class="badge bg-danger">Vắng</span>; break;
+                                            case "HalfDay": <span class="badge bg-info">Nửa ngày</span>; break;
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.Attendances.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">Chưa có dữ liệu chấm công tháng này.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Hôm nay</h5>
+            </div>
+            <div class="card-body text-center">
+                @if (todayAttendance != null)
+                {
+                    <div class="mb-3">
+                        @switch (todayAttendance.Status)
+                        {
+                            case "Present":
+                                <span class="badge bg-success p-3" style="font-size: 1.2rem;">
+                                    <i class="bi bi-check-circle"></i> Có mặt
+                                </span>; break;
+                            case "Late":
+                                <span class="badge bg-warning text-dark p-3" style="font-size: 1.2rem;">
+                                    <i class="bi bi-exclamation-triangle"></i> Đi muộn
+                                </span>; break;
+                            case "Absent":
+                                <span class="badge bg-danger p-3" style="font-size: 1.2rem;">
+                                    <i class="bi bi-x-circle"></i> Vắng
+                                </span>; break;
+                            case "HalfDay":
+                                <span class="badge bg-info p-3" style="font-size: 1.2rem;">
+                                    <i class="bi bi-circle-half"></i> Nửa ngày
+                                </span>; break;
+                        }
+                    </div>
+                    <p class="mb-1"><strong>Ca:</strong> @todayAttendance.Shift?.Name</p>
+                    <p class="mb-1"><strong>Giờ vào:</strong> @(todayAttendance.CheckIn?.ToString("HH:mm") ?? "-")</p>
+                    <p class="mb-1"><strong>Giờ ra:</strong> @(todayAttendance.CheckOut?.ToString("HH:mm") ?? "-")</p>
+                    @if (todayAttendance.OvertimeHours > 0)
+                    {
+                        <p class="mb-1"><strong>Tăng ca:</strong> @todayAttendance.OvertimeHours giờ</p>
+                    }
+                }
+                else
+                {
+                    <div class="text-muted py-4">
+                        <i class="bi bi-calendar-x" style="font-size: 3rem;"></i>
+                        <p class="mt-2 mb-0">Hôm nay chưa có chấm công</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

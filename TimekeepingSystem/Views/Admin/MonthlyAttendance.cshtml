@@ -1,0 +1,146 @@
+@model AttendanceMatrixViewModel
+@{
+    ViewData["Title"] = $"Bảng chấm công tháng {Model.Month}/{Model.Year}";
+    var today = DateTime.Today;
+    var isCurrentMonth = Model.Year == today.Year && Model.Month == today.Month;
+}
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-wrap">
+        <h4 class="mb-0"><i class="bi bi-grid-3x3-gap-fill"></i> Bảng chấm công tháng @Model.Month/@Model.Year</h4>
+        <div>
+            <a asp-action="MonthlyAttendance" asp-route-year="@(Model.Month == 1 ? Model.Year - 1 : Model.Year)" asp-route-month="@(Model.Month == 1 ? 12 : Model.Month - 1)" class="btn btn-light btn-sm @(Model.CanGoPrev ? "" : "disabled")">
+                <i class="bi bi-chevron-left"></i> Tháng trước
+            </a>
+            <a asp-action="MonthlyAttendance" asp-route-year="@(Model.Month == 12 ? Model.Year + 1 : Model.Year)" asp-route-month="@(Model.Month == 12 ? 1 : Model.Month + 1)" class="btn btn-light btn-sm @(Model.CanGoNext ? "" : "disabled")">
+                Tháng sau <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table table-bordered table-sm mb-0 attendance-matrix" style="font-size: 0.75rem;">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="sticky-col" style="min-width: 140px; position: sticky; left: 0; z-index: 10; background: #212529;">Công nhân</th>
+                        @for (int d = 1; d <= Model.DaysInMonth; d++)
+                        {
+                            var date = new DateTime(Model.Year, Model.Month, d);
+                            var isWeekend = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+                            var isToday = isCurrentMonth && d == today.Day;
+                            <th class="text-center @(isWeekend ? "table-secondary" : "") @(isToday ? "table-warning" : "")" style="min-width: 38px; width: 38px; padding: 4px 2px;">
+                                @d<br/>
+                                <small>@date.ToString("ddd", new System.Globalization.CultureInfo("vi-VN"))</small>
+                            </th>
+                        }
+                        <th class="text-center" style="min-width: 50px;">Có mặt</th>
+                        <th class="text-center" style="min-width: 50px;">Muộn</th>
+                        <th class="text-center" style="min-width: 50px;">Vắng</th>
+                        <th class="text-center" style="min-width: 50px;">½ Ngày</th>
+                        <th class="text-center" style="min-width: 70px;">Giờ làm</th>
+                        <th class="text-center" style="min-width: 60px;">Tăng ca</th>
+                        <th class="text-end" style="min-width: 100px;">Lương (₫)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var worker in Model.Workers)
+                    {
+                        <tr>
+                            <td class="fw-semibold sticky-col" style="position: sticky; left: 0; z-index: 5; background: white; white-space: nowrap;">
+                                <a asp-action="WorkerAttendance" asp-route-id="@worker.User?.Id" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="text-decoration-none">
+                                    @worker.User?.FullName
+                                </a>
+                            </td>
+                            @for (int d = 1; d <= Model.DaysInMonth; d++)
+                            {
+                                var att = worker.Days.GetValueOrDefault(d);
+                                var date = new DateTime(Model.Year, Model.Month, d);
+                                var isWeekend = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+                                var isToday = isCurrentMonth && d == today.Day;
+                                var cellClass = "";
+                                var badgeClass = "";
+                                var statusText = "";
+                                var shiftText = "";
+                                var notesText = "";
+                                var timeText = "";
+                                var otText = "";
+
+                                if (att != null)
+                                {
+                                    switch (att.Status)
+                                    {
+                                        case "Present":
+                                            cellClass = "bg-success text-white";
+                                            badgeClass = "bg-success";
+                                            statusText = "Có mặt";
+                                            break;
+                                        case "Late":
+                                            cellClass = "bg-warning text-dark";
+                                            badgeClass = "bg-warning text-dark";
+                                            statusText = "Muộn";
+                                            break;
+                                        case "Absent":
+                                            cellClass = "bg-danger text-white";
+                                            badgeClass = "bg-danger";
+                                            statusText = "Vắng";
+                                            break;
+                                        case "HalfDay":
+                                            cellClass = "bg-info text-white";
+                                            badgeClass = "bg-info";
+                                            statusText = "½";
+                                            break;
+                                    }
+                                    shiftText = att.Shift?.Name ?? "";
+                                    notesText = att.Notes ?? "";
+                                    timeText = att.CheckIn.HasValue && att.CheckOut.HasValue
+                                        ? $"{att.CheckIn.Value:HH:mm}-{att.CheckOut.Value:HH:mm}"
+                                        : "";
+                                    otText = att.OvertimeHours > 0 ? $"{att.OvertimeHours} giờ tăng ca" : "";
+                                }
+                                else
+                                {
+                                    cellClass = "";
+                                    statusText = "?";
+                                }
+
+                                <td class="text-center p-1 @cellClass @(isWeekend ? "opacity-75" : "") @(isToday ? "fw-bold" : "")"
+                                    title="@(worker.User?.FullName) - @date.ToString("dd/MM/yyyy")@(att != null ? $": {statusText} ({shiftText})" : "")@(!string.IsNullOrEmpty(timeText) ? $" - {timeText}" : "")@(!string.IsNullOrEmpty(otText) ? $", {otText}" : "")@(!string.IsNullOrEmpty(notesText) ? $" - {notesText}" : "")"
+                                    style="cursor: pointer;"
+                                    onclick="window.location.href='@Url.Action("WorkerAttendance", new { id = worker.User?.Id, year = Model.Year, month = Model.Month })'">
+                                    @if (att != null)
+                                    {
+                                        <span class="badge @badgeClass" style="font-size: 0.7rem; width: 100%;">
+                                            @(att.Status == "HalfDay" ? "½" : att.Status == "Present" ? "✓" : att.Status == "Late" ? "⚠" : "✗")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted" style="font-size: 0.7rem;">-</span>
+                                    }
+                                </td>
+                            }
+                            <td class="text-center fw-bold text-success">@worker.PresentCount</td>
+                            <td class="text-center fw-bold text-warning">@worker.LateCount</td>
+                            <td class="text-center fw-bold text-danger">@worker.AbsentCount</td>
+                            <td class="text-center fw-bold text-info">@worker.HalfDayCount</td>
+                            <td class="text-center">@worker.TotalWorkingHours.ToString("0.#")h</td>
+                            <td class="text-center">@worker.TotalOvertimeHours.ToString("0.#")h</td>
+                            <td class="text-end fw-bold">@worker.TotalSalary.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="d-flex gap-3 flex-wrap">
+            <span><span class="badge bg-success">✓</span> Có mặt</span>
+            <span><span class="badge bg-warning text-dark">⚠</span> Đi muộn</span>
+            <span><span class="badge bg-danger">✗</span> Vắng</span>
+            <span><span class="badge bg-info">½</span> Nửa ngày</span>
+            <span><span class="text-muted">-</span> Chưa có dữ liệu</span>
+            <span class="ms-auto"><i class="bi bi-hand-index"></i> Click vào ô để xem chi tiết</span>
+        </div>
+    </div>
+</div>
+

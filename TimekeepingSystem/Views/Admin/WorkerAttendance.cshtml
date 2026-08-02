@@ -1,0 +1,415 @@
+@model List<Attendance>
+@{
+    var user = ViewBag.User as User;
+    var year = ViewBag.Year as int? ?? DateTime.Today.Year;
+    var month = ViewBag.Month as int? ?? DateTime.Today.Month;
+    var shifts = ViewBag.Shifts as List<Shift> ?? new();
+    var today = DateTime.Today;
+    var isCurrentMonth = year == today.Year && month == today.Month;
+    var daysInMonth = DateTime.DaysInMonth(year, month);
+    ViewData["Title"] = $"Chấm công - {user?.FullName} - Tháng {month}/{year}";
+
+    // Thống kê
+    int presentCount = Model.Count(a => a.Status == "Present");
+    int lateCount = Model.Count(a => a.Status == "Late");
+    int absentCount = Model.Count(a => a.Status == "Absent");
+    int halfDayCount = Model.Count(a => a.Status == "HalfDay");
+    decimal totalWorkingHours = Model.Sum(a => a.CheckIn.HasValue && a.CheckOut.HasValue ? (decimal)(a.CheckOut.Value - a.CheckIn.Value).TotalHours : 0);
+    decimal totalOvertimeHours = Model.Sum(a => a.OvertimeHours);
+    decimal daysWorked = presentCount + lateCount + (halfDayCount * 0.5m);
+    decimal dailySalary = user != null ? user.BaseSalary / 26m : 0;
+    decimal basePay = dailySalary * daysWorked;
+    decimal overtimePay = totalOvertimeHours * (dailySalary / 8m) * 1.5m;
+    decimal netSalary = basePay + overtimePay;
+}
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h4 class="mb-0"><i class="bi bi-person-badge"></i> @user?.FullName</h4>
+            <small>#@user?.Id - Lương cơ bản: @user?.BaseSalary.ToString("N0") ₫/tháng</small>
+        </div>
+        <div>
+            <a asp-action="WorkerAttendance" asp-route-id="@user?.Id" asp-route-year="@(month == 1 ? year - 1 : year)" asp-route-month="@(month == 1 ? 12 : month - 1)" class="btn btn-light btn-sm @(ViewBag.CanGoPrev != null && ViewBag.CanGoPrev ? "" : "disabled")">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+            <span class="text-white mx-2 fw-bold">Tháng @month/@year</span>
+            <a asp-action="WorkerAttendance" asp-route-id="@user?.Id" asp-route-year="@(month == 12 ? year + 1 : year)" asp-route-month="@(month == 12 ? 1 : month + 1)" class="btn btn-light btn-sm @(ViewBag.CanGoNext != null && ViewBag.CanGoNext ? "" : "disabled")">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <a asp-action="SalarySlip" asp-route-id="@user?.Id" asp-route-month="@month" asp-route-year="@year" class="btn btn-success btn-sm ms-2">
+                <i class="bi bi-printer"></i> Phiếu lương
+            </a>
+        </div>
+    </div>
+
+    <!-- Thống kê nhanh -->
+    <div class="card-body">
+        <div class="row text-center mb-3">
+            <div class="col-2">
+                <div class="border rounded p-2 bg-success bg-opacity-10">
+                    <h5 class="text-success mb-0">@presentCount</h5>
+                    <small>Có mặt</small>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="border rounded p-2 bg-warning bg-opacity-10">
+                    <h5 class="text-warning mb-0">@lateCount</h5>
+                    <small>Muộn</small>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="border rounded p-2 bg-danger bg-opacity-10">
+                    <h5 class="text-danger mb-0">@absentCount</h5>
+                    <small>Vắng</small>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="border rounded p-2 bg-primary bg-opacity-10">
+                    <h5 class="text-primary mb-0">@totalWorkingHours.ToString("0.#")h</h5>
+                    <small>Số giờ làm</small>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="border rounded p-2 bg-secondary bg-opacity-10">
+                    <h5 class="text-secondary mb-0">@totalOvertimeHours.ToString("0.#")h</h5>
+                    <small>Tăng ca</small>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="border rounded p-2 bg-info bg-opacity-10">
+                    <h5 class="text-info mb-0">@netSalary.ToString("N0") ₫</h5>
+                    <small>Lương thực lĩnh</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng ma trận ngang -->
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table table-bordered table-sm mb-0 attendance-matrix" style="font-size: 0.75rem;">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center" style="min-width:60px;">Ngày</th>
+                        @for (int d = 1; d <= daysInMonth; d++)
+                        {
+                            var date = new DateTime(year, month, d);
+                            var isWeekend = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+                            var isToday = isCurrentMonth && d == today.Day;
+                            <th class="text-center @(isWeekend ? "table-secondary" : "") @(isToday ? "table-warning" : "")" style="min-width: 55px; padding: 3px;">
+                                <div class="fw-bold">@d</div>
+                                <small>@date.ToString("ddd", new System.Globalization.CultureInfo("vi-VN"))</small>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Hàng Trạng thái -->
+                    <tr>
+                        <td class="fw-bold text-end" style="font-size:0.7rem;">Trạng thái</td>
+                        @for (int d = 1; d <= daysInMonth; d++)
+                        {
+                            var att = Model.FirstOrDefault(a => a.Date.Day == d);
+                            var date = new DateTime(year, month, d);
+                            var isWeekend = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+                            var isToday = isCurrentMonth && d == today.Day;
+
+                            if (att != null)
+                            {
+                                var badgeClass = "";
+                                var icon = "";
+                                switch (att.Status)
+                                {
+                                    case "Present": badgeClass = "bg-success"; icon = "✓"; break;
+                                    case "Late": badgeClass = "bg-warning text-dark"; icon = "⚠"; break;
+                                    case "Absent": badgeClass = "bg-danger"; icon = "✗"; break;
+                                    case "HalfDay": badgeClass = "bg-info"; icon = "½"; break;
+                                }
+                                <td class="text-center p-1 @(isWeekend ? "opacity-75" : "") @(isToday ? "fw-bold" : "")" style="cursor: pointer;"
+                                    onclick="openEditModal(@att.Id, @att.UserId, '@att.Date.ToString("yyyy-MM-dd")', @att.ShiftId, '@att.Status', '@(att.CheckIn?.ToString("HH:mm") ?? "")', '@(att.CheckOut?.ToString("HH:mm") ?? "")', @att.OvertimeHours.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture), '@(att.Notes?.Replace("'", "\\'") ?? "")')">
+                                    <span class="badge @badgeClass" style="font-size: 0.85rem; width: 100%;">@icon</span>
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-center p-1 @(isWeekend ? "opacity-50" : "") @(isToday ? "fw-bold" : "")" style="cursor: pointer;"
+                                    onclick="openAddModal(@user?.Id, '@(new DateTime(year, month, d).ToString("yyyy-MM-dd"))')">
+                                    <span class="text-muted">-</span>
+                                </td>
+                            }
+                        }
+                    </tr>
+                    <!-- Hàng Ca làm -->
+                    <tr>
+                        <td class="fw-bold text-end" style="font-size:0.7rem;">Ca làm</td>
+                        @for (int d = 1; d <= daysInMonth; d++)
+                        {
+                            var att = Model.FirstOrDefault(a => a.Date.Day == d);
+                            var date = new DateTime(year, month, d);
+                            var isWeekend = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+                            var isToday = isCurrentMonth && d == today.Day;
+                            <td class="text-center @(isWeekend ? "opacity-75" : "") @(isToday ? "fw-bold" : "")" style="font-size: 0.7rem;">
+                                @(att?.Shift?.Name ?? "-")
+                            </td>
+                        }
+                    </tr>
+                    <!-- Hàng Thời gian làm -->
+                    <tr>
+                        <td class="fw-bold text-end" style="font-size:0.7rem;">Giờ làm</td>
+                        @for (int d = 1; d <= daysInMonth; d++)
+                        {
+                            var att = Model.FirstOrDefault(a => a.Date.Day == d);
+                            var date = new DateTime(year, month, d);
+                            var isWeekend = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+                            var isToday = isCurrentMonth && d == today.Day;
+                            <td class="text-center @(isWeekend ? "opacity-75" : "") @(isToday ? "fw-bold" : "")" style="font-size: 0.65rem;">
+                                @(att != null && att.CheckIn.HasValue && att.CheckOut.HasValue ? $"{att.CheckIn.Value:HH:mm}-{att.CheckOut.Value:HH:mm}" : "-")
+                            </td>
+                        }
+                    </tr>
+                    <!-- Hàng Tăng ca -->
+                    <tr>
+                        <td class="fw-bold text-end" style="font-size:0.7rem;">Tăng ca</td>
+                        @for (int d = 1; d <= daysInMonth; d++)
+                        {
+                            var att = Model.FirstOrDefault(a => a.Date.Day == d);
+                            var date = new DateTime(year, month, d);
+                            var isWeekend = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+                            var isToday = isCurrentMonth && d == today.Day;
+                            <td class="text-center @(isWeekend ? "opacity-75" : "") @(isToday ? "fw-bold" : "")" style="font-size: 0.65rem;">
+                                @(att != null && att.OvertimeHours > 0 ? $"{att.OvertimeHours} giờ" : "-")
+                            </td>
+                        }
+                    </tr>
+                    <!-- Hàng Ghi chú -->
+                    <tr>
+                        <td class="fw-bold text-end" style="font-size:0.7rem;">Ghi chú</td>
+                        @for (int d = 1; d <= daysInMonth; d++)
+                        {
+                            var att = Model.FirstOrDefault(a => a.Date.Day == d);
+                            var date = new DateTime(year, month, d);
+                            var isWeekend = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+                            var isToday = isCurrentMonth && d == today.Day;
+                            <td class="text-center @(isWeekend ? "opacity-75" : "") @(isToday ? "fw-bold" : "")" style="font-size: 0.65rem; max-width: 55px; overflow: hidden; text-overflow: ellipsis;">
+                                @(string.IsNullOrEmpty(att?.Notes) ? "-" : att.Notes)
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex gap-3 mt-2 flex-wrap">
+            <small><span class="badge bg-success">✓</span> Có mặt</small>
+            <small><span class="badge bg-warning text-dark">⚠</span> Muộn</small>
+            <small><span class="badge bg-danger">✗</span> Vắng</small>
+            <small><span class="badge bg-info">½</span> Nửa ngày</small>
+            <small class="text-muted ms-auto"><i class="bi bi-hand-index"></i> Click vào ô để sửa</small>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Sửa chấm công -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="UpdateAttendance" method="post">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Cập nhật chấm công</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="editId" />
+                    <input type="hidden" name="userId" id="editUserId" />
+                    <input type="hidden" name="date" id="editDate" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ngày</label>
+                        <p class="form-control-plaintext" id="editDateDisplay"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ca làm</label>
+                        <select name="shiftId" id="editShiftId" class="form-select">
+                            @foreach (var shift in shifts)
+                            {
+                                <option value="@shift.Id">@shift.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold">Giờ vào</label>
+                            <input type="time" name="checkIn" id="editCheckIn" class="form-control" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold">Giờ ra</label>
+                            <input type="time" name="checkOut" id="editCheckOut" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Trạng thái</label>
+                        <select name="status" id="editStatus" class="form-select">
+                            <option value="Present">Có mặt</option>
+                            <option value="Late">Đi muộn</option>
+                            <option value="Absent">Vắng</option>
+                            <option value="HalfDay">Nửa ngày</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tăng ca (giờ)</label>
+                        <input type="number" name="overtimeHours" id="editOvertime" class="form-control" step="0.5" min="0" value="0" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ghi chú</label>
+                        <input type="text" name="notes" id="editNotes" class="form-control" placeholder="Ghi chú..." />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm chấm công mới -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="AddAttendance" method="post">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Thêm chấm công</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="userId" id="addUserId" />
+                    <input type="hidden" name="date" id="addDate" />
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ngày</label>
+                        <p class="form-control-plaintext" id="addDateDisplay"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ca làm</label>
+                        <select name="shiftId" class="form-select">
+                            @foreach (var shift in shifts)
+                            {
+                                <option value="@shift.Id">@shift.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold">Giờ vào</label>
+                            <input type="time" name="checkIn" class="form-control" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold">Giờ ra</label>
+                            <input type="time" name="checkOut" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Trạng thái</label>
+                        <select name="status" class="form-select">
+                            <option value="Present">Có mặt</option>
+                            <option value="Late">Đi muộn</option>
+                            <option value="Absent">Vắng</option>
+                            <option value="HalfDay">Nửa ngày</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tăng ca (giờ)</label>
+                        <input type="number" name="overtimeHours" class="form-control" step="0.5" min="0" value="0" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ghi chú</label>
+                        <input type="text" name="notes" class="form-control" placeholder="Ghi chú..." />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-plus-lg"></i> Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Card thêm chấm công mới (nhanh) -->
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Thêm chấm công mới</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="AddAttendance" method="post" class="row g-3">
+            <input type="hidden" name="userId" value="@user?.Id" />
+            <div class="col-md-2">
+                <label class="form-label">Ngày</label>
+                <input type="date" name="date" class="form-control" required />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Ca làm</label>
+                <select name="shiftId" class="form-select">
+                    @foreach (var shift in shifts)
+                    {
+                        <option value="@shift.Id">@shift.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Giờ vào</label>
+                <input type="time" name="checkIn" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Giờ ra</label>
+                <input type="time" name="checkOut" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Trạng thái</label>
+                <select name="status" class="form-select">
+                    <option value="Present">Có mặt</option>
+                    <option value="Late">Đi muộn</option>
+                    <option value="Absent">Vắng</option>
+                    <option value="HalfDay">Nửa ngày</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Tăng ca (giờ)</label>
+                <input type="number" name="overtimeHours" class="form-control" step="0.5" min="0" value="0" />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Ghi chú</label>
+                <input type="text" name="notes" class="form-control" placeholder="Ghi chú..." />
+            </div>
+            <div class="col-12 text-end">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-plus-lg"></i> Thêm chấm công
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openEditModal(id, userId, date, shiftId, status, checkIn, checkOut, overtime, notes) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editDate').value = date;
+            document.getElementById('editDateDisplay').textContent = new Date(date).toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
+            document.getElementById('editShiftId').value = shiftId;
+            document.getElementById('editStatus').value = status;
+            document.getElementById('editCheckIn').value = checkIn;
+            document.getElementById('editCheckOut').value = checkOut;
+            document.getElementById('editOvertime').value = overtime;
+            document.getElementById('editNotes').value = notes;
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        }
+
+        function openAddModal(userId, date) {
+            document.getElementById('addUserId').value = userId;
+            document.getElementById('addDate').value = date;
+            document.getElementById('addDateDisplay').textContent = new Date(date).toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
+            new bootstrap.Modal(document.getElementById('addModal')).show();
+        }
+    </script>
+}
+

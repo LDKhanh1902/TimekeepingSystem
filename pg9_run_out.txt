@@ -1,0 +1,33 @@
+Using launch settings from TimekeepingSystem\Properties\launchSettings.json...
+Building...
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (115ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = current_schema() AND table_name = 'Users') AS "Value"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (172ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT s."Id", s."Description", s."EndTime", s."Name", s."StartTime"
+      FROM "Shifts" AS s
+      ORDER BY s."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (126ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."Address", u."BaseSalary", u."CreatedAt", u."Email", u."FullName", u."IsActive", u."Password", u."Phone", u."Role", u."SalaryPerShift", u."Username"
+      FROM "Users" AS u
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (239ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT u."Id", u."Address", u."BaseSalary", u."CreatedAt", u."Email", u."FullName", u."IsActive", u."Password", u."Phone", u."Role", u."SalaryPerShift", u."Username"
+      FROM "Users" AS u
+      WHERE u."Role" = 'Worker' AND u."IsActive"
+      ORDER BY u."Id"
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (85ms) [Parameters=[@__startDate_0='?' (DbType = DateTime2), @__endDate_1='?' (DbType = DateTime2)], CommandType='Text', CommandTimeout='30']
+      SELECT a."UserId", a."Date"
+      FROM "Attendances" AS a
+      WHERE a."Date" >= @__startDate_0 AND a."Date" <= @__endDate_1
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5128
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\DATA\Folder\TimekeepingSystem

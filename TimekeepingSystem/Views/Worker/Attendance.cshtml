@@ -1,0 +1,111 @@
+@model AttendanceViewModel
+@{
+    ViewData["Title"] = "Chấm công - Tháng @Model.Month/@Model.Year";
+    var today = DateTime.Today;
+    var isCurrentMonth = Model.Year == today.Year && Model.Month == today.Month;
+}
+
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h4 class="mb-0"><i class="bi bi-calendar-check"></i> Chấm công tháng @Model.Month/@Model.Year</h4>
+            <small>@Model.User?.FullName</small>
+        </div>
+        <div>
+            <a asp-action="Attendance" asp-route-year="@(Model.Month == 1 ? Model.Year - 1 : Model.Year)" asp-route-month="@(Model.Month == 1 ? 12 : Model.Month - 1)" class="btn btn-light btn-sm @(Model.CanGoPrev ? "" : "disabled")">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+            <span class="text-white mx-2 fw-bold">Tháng @Model.Month/@Model.Year</span>
+            <a asp-action="Attendance" asp-route-year="@(Model.Month == 12 ? Model.Year + 1 : Model.Year)" asp-route-month="@(Model.Month == 12 ? 1 : Model.Month + 1)" class="btn btn-light btn-sm @(Model.CanGoNext ? "" : "disabled")">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row text-center mb-3">
+            <div class="col-6 col-md-2 mb-2">
+                <div class="border rounded p-2 bg-success bg-opacity-10">
+                    <h5 class="text-success mb-0">@Model.PresentCount</h5>
+                    <small>Có mặt</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2 mb-2">
+                <div class="border rounded p-2 bg-warning bg-opacity-10">
+                    <h5 class="text-warning mb-0">@Model.LateCount</h5>
+                    <small>Muộn</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2 mb-2">
+                <div class="border rounded p-2 bg-danger bg-opacity-10">
+                    <h5 class="text-danger mb-0">@Model.AbsentCount</h5>
+                    <small>Vắng</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2 mb-2">
+                <div class="border rounded p-2 bg-info bg-opacity-10">
+                    <h5 class="text-info mb-0">@Model.HalfDayCount</h5>
+                    <small>Nửa ngày</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2 mb-2">
+                <div class="border rounded p-2 bg-primary bg-opacity-10">
+                    <h5 class="text-primary mb-0">@Model.TotalWorkingHours.ToString("0.#")h</h5>
+                    <small>Giờ làm</small>
+                </div>
+            </div>
+            <div class="col-6 col-md-2 mb-2">
+                <div class="border rounded p-2 bg-secondary bg-opacity-10">
+                    <h5 class="text-secondary mb-0">@Model.TotalOvertimeHours.ToString("0.#")h</h5>
+                    <small>Tăng ca</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Ca</th>
+                        <th>Giờ vào</th>
+                        <th>Giờ ra</th>
+                        <th>Tăng ca</th>
+                        <th>Trạng thái</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Attendances)
+                    {
+                        <tr>
+                            <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                            <td>@item.Shift?.Name</td>
+                            <td>@(item.CheckIn?.ToString("HH:mm") ?? "-")</td>
+                            <td>@(item.CheckOut?.ToString("HH:mm") ?? "-")</td>
+                            <td>@(item.OvertimeHours > 0 ? item.OvertimeHours.ToString("0.#") + "h" : "-")</td>
+                            <td>
+                                @switch (item.Status)
+                                {
+                                    case "Present": <span class="badge bg-success">Có mặt</span>; break;
+                                    case "Late": <span class="badge bg-warning text-dark">Muộn</span>; break;
+                                    case "Absent": <span class="badge bg-danger">Vắng</span>; break;
+                                    case "HalfDay": <span class="badge bg-info">Nửa ngày</span>; break;
+                                }
+                            </td>
+                            <td>@(item.Notes ?? "-")</td>
+                        </tr>
+                    }
+                    @if (!Model.Attendances.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox"></i> Tháng này chưa có dữ liệu chấm công.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
