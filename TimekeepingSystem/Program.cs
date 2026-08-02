@@ -12,7 +12,15 @@ var connectionString = builder.Configuration.GetConnectionString("default")
     ?? "Host=localhost;Database=timekeeping;Username=postgres;Password=postgres";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, npgsql =>
+    {
+        npgsql.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorCodesToAdd: null);
+
+        npgsql.CommandTimeout(60);
+    }));
 
 // Data Protection
 builder.Services.AddDataProtection()
