@@ -5,6 +5,7 @@ using TimekeepingSystem.Models.ViewModels;
 
 namespace TimekeepingSystem.Controllers;
 
+[AutoValidateAntiforgeryToken]
 public class AuthController : Controller
 {
     private readonly AppDbContext _context;

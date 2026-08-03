@@ -23,9 +23,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         npgsql.CommandTimeout(30);
     }));
 
-// Data Protection
+// Data Protection - Persist keys to PostgreSQL để tránh mất key khi restart (Render ephemeral FS)
 builder.Services.AddDataProtection()
-    .SetApplicationName("TimekeepingSystem");
+    .SetApplicationName("TimekeepingSystem")
+    .PersistKeysToDbContext<AppDbContext>();
 
 // Memory Cache
 builder.Services.AddDistributedMemoryCache();

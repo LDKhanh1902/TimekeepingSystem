@@ -21,23 +21,22 @@
 - [x] 7. Build Release thành công (0 lỗi, 0 warning)
 
 ## Đã sửa (Phần 2 - Tối ưu truy vấn DB)
-- [x] 1. Chuyển NON-SARGABLE → SARGABLE query:
-      - Trước: `a.Date.Year == y && a.Date.Month == m` → EF dịch thành `date_part(...)` → KHÔNG dùng được index
-      - Sau: `a.Date >= startDate && a.Date < endDate` → dùng được index `(UserId, Date)` và `Date`
-      - Áp dụng cho: AdminController (WorkerAttendance, MonthlyAttendance, SalarySlip), WorkerController (Dashboard, Attendance)
-- [x] 2. Thêm `AsNoTracking()` cho tất cả query GET chỉ đọc:
-      - Giảm RAM/CPU do không bật change tracker
-      - Áp dụng cho: AuthController (Login), AdminController, WorkerController
-- [x] 3. Thêm index DB (migration `AddIndexes`):
-      - `IX_Users_Role_IsActive` trên `(Role, IsActive)` → tăng tốc query lọc theo vai trò
-      - `IX_Attendances_Date` trên `Date` → tăng tốc query theo ngày/tháng
+- [x] 1. Chuyển NON-SARGABLE → SARGABLE query
+- [x] 2. Thêm `AsNoTracking()` cho tất cả query GET chỉ đọc
+- [x] 3. Thêm index DB (migration `AddIndexes`)
 - [x] 4. Build Release thành công (0 lỗi, 0 warning)
 
-## Ghi chú
-- Đã thêm `AppDbContextFactory.cs` (design-time factory) để `dotnet ef` tạo migration
-  mà không cần kết nối Supabase trong lúc build.
-- Migration `InitialCreate` tạo đầy đủ bảng + seed 3 ca + 6 users (1 Admin + 5 Worker).
-- Migration `AddIndexes` thêm 2 index tối ưu truy vấn.
-- Khi deploy lên Render: push code (bao gồm thư mục `Migrations/`) lên GitHub
-  → Render sẽ build Dockerfile mới → chạy `Migrate()` tự tạo bảng + index trong Supabase.
+## Đang thực hiện (Phần 3 - Fix Data Protection key + Anti-forgery)
+Vấn đề:
+- `CryptographicException: The key {..} was not found in the key ring` → Data Protection keys không được persist,
+  Render có filesystem tạm → restart là mất key → session cookie/anti-forgery cookie không giải mã được → mất dữ liệu đăng nhập.
+
+### Kế hoạch
+- [x] 1. Thêm package `Microsoft.AspNetCore.DataProtection.EntityFrameworkCore` vào csproj
+- [x] 2. Thêm `DbSet<DataProtectionKey>` vào `AppDbContext`
+- [x] 3. Cấu hình `.PersistKeysToDbContext<AppDbContext>()` trong `Program.cs`
+- [x] 4. Thêm `@Html.AntiForgeryToken()` vào form Login (`Login.cshtml`)
+- [x] 5. Thêm `[ValidateAntiForgeryToken]` cho action Login POST (`AuthController.cs`)
+- [x] 6. Tạo migration `DataProtectionKeys` (bảng `DataProtectionKeys` trong Supabase)
+- [x] 7. Build Release kiểm tra 0 lỗi
 
