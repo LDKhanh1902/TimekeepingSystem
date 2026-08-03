@@ -37,16 +37,22 @@ public class WorkerController : Controller
         var userId = GetUserId();
         var today = DateTime.Today;
 
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null) return RedirectToAction("Logout", "Auth");
 
         var todayAttendance = await _context.Attendances
+            .AsNoTracking()
             .Include(a => a.Shift)
             .FirstOrDefaultAsync(a => a.UserId == userId && a.Date == today);
 
+        // Dùng khoảng ngày (sargable) → tận dụng index (UserId, Date)
+        var startDate = new DateTime(today.Year, today.Month, 1);
+        var endDate = startDate.AddMonths(1);
+
         var thisMonthAttendances = await _context.Attendances
+            .AsNoTracking()
             .Include(a => a.Shift)
-            .Where(a => a.UserId == userId && a.Date.Year == today.Year && a.Date.Month == today.Month)
+            .Where(a => a.UserId == userId && a.Date >= startDate && a.Date < endDate)
             .OrderByDescending(a => a.Date)
             .ToListAsync();
 
@@ -83,7 +89,7 @@ public class WorkerController : Controller
         if (!IsLoggedIn()) return RedirectToAction("Login", "Auth");
 
         var userId = GetUserId();
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null) return RedirectToAction("Logout", "Auth");
 
         return View(user);
@@ -94,7 +100,7 @@ public class WorkerController : Controller
         if (!IsLoggedIn()) return RedirectToAction("Login", "Auth");
 
         var userId = GetUserId();
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null) return RedirectToAction("Logout", "Auth");
 
         var today = DateTime.Today;
@@ -107,9 +113,14 @@ public class WorkerController : Controller
         if (y < 2024) y = 2024;
         if (y > today.Year + 1) y = today.Year + 1;
 
+        // Dùng khoảng ngày (sargable) → tận dụng index (UserId, Date)
+        var startDate = new DateTime(y, m, 1);
+        var endDate = startDate.AddMonths(1);
+
         var attendances = await _context.Attendances
+            .AsNoTracking()
             .Include(a => a.Shift)
-            .Where(a => a.UserId == userId && a.Date.Year == y && a.Date.Month == m)
+            .Where(a => a.UserId == userId && a.Date >= startDate && a.Date < endDate)
             .OrderByDescending(a => a.Date)
             .ToListAsync();
 

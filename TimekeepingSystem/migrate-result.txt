@@ -1,0 +1,38 @@
+﻿Using project 'D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj'.
+Using startup project 'D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj'.
+Writing 'D:\DATA\Folder\TimekeepingSystem\obj\TimekeepingSystem.csproj.EntityFrameworkCore.targets'...
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\Khanh\AppData\Local\Temp\tmppw5zsr.tmp /verbosity:quiet /nologo D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj
+Writing 'D:\DATA\Folder\TimekeepingSystem\obj\TimekeepingSystem.csproj.EntityFrameworkCore.targets'...
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\Khanh\AppData\Local\Temp\tmp2pdjow.tmp /verbosity:quiet /nologo D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj
+Build started...
+dotnet build D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj /verbosity:quiet /nologo /p:PublishAot=false
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error : System.IO.IOException: The process cannot access the file 'D:\DATA\Folder\TimekeepingSystem\obj\Debug\net8.0\rpswa.dswa.cache.json' because it is being used by another process. [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at System.IO.File.OpenWrite(String path) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at Microsoft.AspNetCore.StaticWebAssets.Tasks.DefineStaticWebAssets.DefineStaticWebAssetsCache.WriteCacheManifest() [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at Microsoft.AspNetCore.StaticWebAssets.Tasks.DefineStaticWebAssets.Execute() [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+
+Build FAILED.
+
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error : System.IO.IOException: The process cannot access the file 'D:\DATA\Folder\TimekeepingSystem\obj\Debug\net8.0\rpswa.dswa.cache.json' because it is being used by another process. [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at System.IO.Strategies.FileStreamHelpers.ChooseStrategyCore(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at System.IO.File.OpenWrite(String path) [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at Microsoft.AspNetCore.StaticWebAssets.Tasks.DefineStaticWebAssets.DefineStaticWebAssetsCache.WriteCacheManifest() [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+C:\Program Files\dotnet\sdk\10.0.302\Sdks\Microsoft.NET.Sdk.StaticWebAssets\targets\Microsoft.NET.Sdk.StaticWebAssets.targets(706,5): error :    at Microsoft.AspNetCore.StaticWebAssets.Tasks.DefineStaticWebAssets.Execute() [D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.98
+Microsoft.EntityFrameworkCore.Tools.CommandException: Build failed. Use dotnet build to see the errors.
+   at Microsoft.EntityFrameworkCore.Tools.Project.Build()
+   at Microsoft.EntityFrameworkCore.Tools.RootCommand.Execute(String[] _)
+   at Microsoft.EntityFrameworkCore.Tools.Commands.CommandBase.<>c__DisplayClass0_0.<Configure>b__0(String[] args)
+   at Microsoft.DotNet.Cli.CommandLine.CommandLineApplication.Execute(String[] args)
+   at Microsoft.EntityFrameworkCore.Tools.Program.Main(String[] args)
+Build failed. Use dotnet build to see the errors.

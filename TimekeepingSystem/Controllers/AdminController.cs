@@ -24,8 +24,12 @@ public class AdminController : Controller
         if (!IsAdmin()) return RedirectToAction("Login", "Auth");
 
         var today = DateTime.Today;
-        var workers = await _context.Users.Where(u => u.Role == "Worker" && u.IsActive).ToListAsync();
+        var workers = await _context.Users
+            .AsNoTracking()
+            .Where(u => u.Role == "Worker" && u.IsActive)
+            .ToListAsync();
         var todayAttendances = await _context.Attendances
+            .AsNoTracking()
             .Include(a => a.User)
             .Include(a => a.Shift)
             .Where(a => a.Date == today)
@@ -52,6 +56,7 @@ public class AdminController : Controller
         if (!IsAdmin()) return RedirectToAction("Login", "Auth");
 
         var workers = await _context.Users
+            .AsNoTracking()
             .Where(u => u.Role == "Worker")
             .OrderByDescending(u => u.IsActive)
             .ThenBy(u => u.FullName)
@@ -74,9 +79,14 @@ public class AdminController : Controller
         if (m < 1) { m = 1; y--; }
         if (m > 12) { m = 12; y++; }
 
+        // Dùng khoảng ngày (sargable) thay vì Date.Year/Date.Month → tận dụng được index (UserId, Date)
+        var startDate = new DateTime(y, m, 1);
+        var endDate = startDate.AddMonths(1);
+
         var attendances = await _context.Attendances
+            .AsNoTracking()
             .Include(a => a.Shift)
-            .Where(a => a.UserId == id && a.Date.Year == y && a.Date.Month == m)
+            .Where(a => a.UserId == id && a.Date >= startDate && a.Date < endDate)
             .OrderByDescending(a => a.Date)
             .ToListAsync();
 
@@ -105,7 +115,7 @@ public class AdminController : Controller
         ViewBag.Month = m;
         ViewBag.CanGoPrev = true;
         ViewBag.CanGoNext = new DateTime(y, m, 1) < new DateTime(today.Year, today.Month, 1);
-        ViewBag.Shifts = await _context.Shifts.ToListAsync();
+        ViewBag.Shifts = await _context.Shifts.AsNoTracking().ToListAsync();
 
         return View(allDates.OrderBy(a => a.Date).ToList());
     }
@@ -207,14 +217,20 @@ public class AdminController : Controller
         if (m > 12) { m = 12; y++; }
 
         var daysInMonth = DateTime.DaysInMonth(y, m);
+        // Dùng khoảng ngày (sargable) → tận dụng index Date
+        var startDate = new DateTime(y, m, 1);
+        var endDate = startDate.AddMonths(1);
+
         var workers = await _context.Users
+            .AsNoTracking()
             .Where(u => u.Role == "Worker" && u.IsActive)
             .OrderBy(u => u.FullName)
             .ToListAsync();
 
         var attendances = await _context.Attendances
+            .AsNoTracking()
             .Include(a => a.Shift)
-            .Where(a => a.Date.Year == y && a.Date.Month == m)
+            .Where(a => a.Date >= startDate && a.Date < endDate)
             .ToListAsync();
 
         var attendanceLookup = attendances
@@ -283,9 +299,14 @@ public class AdminController : Controller
         if (m < 1) { m = 12; y--; }
         if (m > 12) { m = 1; y++; }
 
+        // Dùng khoảng ngày (sargable) → tận dụng index (UserId, Date)
+        var startDate = new DateTime(y, m, 1);
+        var endDate = startDate.AddMonths(1);
+
         var attendances = await _context.Attendances
+            .AsNoTracking()
             .Include(a => a.Shift)
-            .Where(a => a.UserId == id && a.Date.Year == y && a.Date.Month == m)
+            .Where(a => a.UserId == id && a.Date >= startDate && a.Date < endDate)
             .OrderBy(a => a.Date)
             .ToListAsync();
 

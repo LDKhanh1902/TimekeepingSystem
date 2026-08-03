@@ -1,4 +1,0 @@
-Unhandled exception. System.InvalidOperationException: No service for type 'Microsoft.EntityFrameworkCore.Storage.IRelationalDatabaseCreator' has been registered.
-   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(IServiceProvider provider, Type serviceType)
-   at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
-   at Program.<Main>$(String[] args) in D:\DATA\Folder\TimekeepingSystem\Program.cs:line 52

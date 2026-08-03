@@ -21,6 +21,9 @@ WORKDIR /app
 
 COPY --from=publish /app/publish .
 
+# Render truyền biến môi trường PORT lúc runtime.
+# Dùng shell entrypoint để thay thế ${PORT} bằng PORT thật của Render (mặc định 10000).
 ENV ASPNETCORE_URLS=http://+:10000
 
-ENTRYPOINT ["dotnet","TimekeepingSystem.dll"]
+ENTRYPOINT ["sh", "-c", "exec dotnet TimekeepingSystem.dll --urls http://+:${PORT:-10000}"]
+

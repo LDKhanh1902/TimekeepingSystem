@@ -31,6 +31,7 @@ public class AuthController : Controller
         if (!ModelState.IsValid) return View(model);
 
         var user = await _context.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Username == model.Username && u.Password == model.Password && u.IsActive);
 
         if (user == null)

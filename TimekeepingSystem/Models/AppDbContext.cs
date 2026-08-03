@@ -17,12 +17,16 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasIndex(u => u.Username).IsUnique();
+            // Index cho truy vấn lọc theo vai trò (Admin/Worker) + trạng thái active
+            entity.HasIndex(u => new { u.Role, u.IsActive });
             entity.Property(u => u.CreatedAt).HasColumnType("timestamp without time zone");
         });
 
         modelBuilder.Entity<Attendance>(entity =>
         {
             entity.HasIndex(a => new { a.UserId, a.Date }).IsUnique();
+            // Index riêng cho cột Date: tăng tốc truy vấn theo ngày/tháng (Dashboard, MonthlyAttendance)
+            entity.HasIndex(a => a.Date);
             entity.Property(a => a.Date).HasColumnType("timestamp without time zone");
             entity.Property(a => a.CheckIn).HasColumnType("timestamp without time zone");
             entity.Property(a => a.CheckOut).HasColumnType("timestamp without time zone");

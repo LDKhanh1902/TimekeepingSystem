@@ -1,0 +1,216 @@
+﻿Using project 'D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj'.
+Using startup project 'D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj'.
+Writing 'D:\DATA\Folder\TimekeepingSystem\obj\TimekeepingSystem.csproj.EntityFrameworkCore.targets'...
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\Khanh\AppData\Local\Temp\tmpokqz1w.tmp /verbosity:quiet /nologo D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj
+Writing 'D:\DATA\Folder\TimekeepingSystem\obj\TimekeepingSystem.csproj.EntityFrameworkCore.targets'...
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\Khanh\AppData\Local\Temp\tmpi4n54x.tmp /verbosity:quiet /nologo D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj
+Build started...
+dotnet build D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj /verbosity:quiet /nologo /p:PublishAot=false
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.31
+Build succeeded.
+dotnet exec --depsfile D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0\TimekeepingSystem.deps.json --additionalprobingpath C:\Users\Khanh\.nuget\packages --additionalprobingpath "C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages" --runtimeconfig D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0\TimekeepingSystem.runtimeconfig.json C:\Users\Khanh\.dotnet\tools\.store\dotnet-ef\8.0.29\dotnet-ef\8.0.29\tools\net8.0\any\tools\netcoreapp2.0\any\ef.dll database update --assembly D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0\TimekeepingSystem.dll --project D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj --startup-assembly D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0\TimekeepingSystem.dll --startup-project D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj --project-dir D:\DATA\Folder\TimekeepingSystem\ --root-namespace TimekeepingSystem --language C# --framework net8.0 --nullable --working-dir D:\DATA\Folder\TimekeepingSystem --verbose
+Using assembly 'TimekeepingSystem'.
+Using startup assembly 'TimekeepingSystem'.
+Using application base 'D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0'.
+Using working directory 'D:\DATA\Folder\TimekeepingSystem'.
+Using root namespace 'TimekeepingSystem'.
+Using project directory 'D:\DATA\Folder\TimekeepingSystem\'.
+Remaining arguments: .
+Finding DbContext classes...
+Finding IDesignTimeDbContextFactory implementations...
+Found IDesignTimeDbContextFactory implementation 'AppDbContextFactory'.
+Found DbContext 'AppDbContext'.
+Finding application service provider in assembly 'TimekeepingSystem'...
+Finding Microsoft.Extensions.Hosting service provider...
+Using environment 'Development'.
+Using application service provider from Microsoft.Extensions.Hosting.
+Finding DbContext classes in the project...
+Using DbContext factory 'AppDbContextFactory'.
+Using connection string: Host=aws-1-ap-northeast-2.pooler.supabase.com;Database=postgres;Username=postgres.gyyvhakmvlykyowarlfd;Password=LeDuyKhanh123;SSL Mode=Require;Trust Server Certificate=true
+Using context 'AppDbContext'.
+Finding design-time services referenced by assembly 'TimekeepingSystem'...
+Finding design-time services referenced by assembly 'TimekeepingSystem'...
+No referenced design-time services were found.
+Finding design-time services for provider 'Npgsql.EntityFrameworkCore.PostgreSQL'...
+Using design-time services from provider 'Npgsql.EntityFrameworkCore.PostgreSQL'.
+Finding IDesignTimeServices implementations in assembly 'TimekeepingSystem'...
+No design-time services were found.
+Creating DbConnection.
+Created DbConnection. (38ms).
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (9ms).
+Creating DbCommand for 'ExecuteScalar'.
+Created DbCommand for 'ExecuteScalar' (9ms).
+Initialized DbCommand for 'ExecuteScalar' (15ms).
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+Executed DbCommand (242ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (5ms).
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Creating DbCommand for 'ExecuteReader'.
+Created DbCommand for 'ExecuteReader' (0ms).
+Initialized DbCommand for 'ExecuteReader' (1ms).
+Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+Executed DbCommand (104ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+Closing data reader to 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+A data reader for 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' is being disposed after spending 7ms reading results.
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (0ms).
+Migrating using database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (0ms).
+Creating DbCommand for 'ExecuteScalar'.
+Created DbCommand for 'ExecuteScalar' (0ms).
+Initialized DbCommand for 'ExecuteScalar' (0ms).
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+Executed DbCommand (353ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (0ms).
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (1ms).
+Creating DbCommand for 'ExecuteScalar'.
+Created DbCommand for 'ExecuteScalar' (0ms).
+Initialized DbCommand for 'ExecuteScalar' (0ms).
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+Executed DbCommand (99ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (0ms).
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Creating DbCommand for 'ExecuteReader'.
+Created DbCommand for 'ExecuteReader' (2ms).
+Initialized DbCommand for 'ExecuteReader' (7ms).
+Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+Executed DbCommand (156ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+Closing data reader to 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+A data reader for 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' is being disposed after spending 0ms reading results.
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (4ms).
+Applying migration '20260802134057_InitialCreate'.
+Opening connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Opened connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Beginning transaction with isolation level 'Unspecified'.
+Began transaction with isolation level 'ReadCommitted'.
+Creating DbCommand for 'ExecuteNonQuery'.
+Created DbCommand for 'ExecuteNonQuery' (0ms).
+Initialized DbCommand for 'ExecuteNonQuery' (3ms).
+Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE "Shifts" (
+    "Id" integer GENERATED BY DEFAULT AS IDENTITY,
+    "Name" character varying(100) NOT NULL,
+    "StartTime" interval NOT NULL,
+    "EndTime" interval NOT NULL,
+    "Description" character varying(255),
+    CONSTRAINT "PK_Shifts" PRIMARY KEY ("Id")
+);
+Failed executing DbCommand (184ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE "Shifts" (
+    "Id" integer GENERATED BY DEFAULT AS IDENTITY,
+    "Name" character varying(100) NOT NULL,
+    "StartTime" interval NOT NULL,
+    "EndTime" interval NOT NULL,
+    "Description" character varying(255),
+    CONSTRAINT "PK_Shifts" PRIMARY KEY ("Id")
+);
+Disposing transaction.
+Closing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Closed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (0ms).
+'AppDbContext' disposed.
+Disposing connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432'.
+Disposed connection to database 'postgres' on server 'tcp://aws-1-ap-northeast-2.pooler.supabase.com:5432' (2ms).
+Npgsql.PostgresException (0x80004005): 42P07: relation "Shifts" already exists
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQuery(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+  Exception data:
+    Severity: ERROR
+    SqlState: 42P07
+    MessageText: relation "Shifts" already exists
+    File: heap.c
+    Line: 1160
+    Routine: heap_create_with_catalog
+42P07: relation "Shifts" already exists

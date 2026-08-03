@@ -1,0 +1,73 @@
+﻿Using project 'D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj'.
+Using startup project 'D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj'.
+Writing 'D:\DATA\Folder\TimekeepingSystem\obj\TimekeepingSystem.csproj.EntityFrameworkCore.targets'...
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\Khanh\AppData\Local\Temp\tmpkkimnl.tmp /verbosity:quiet /nologo D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj
+Writing 'D:\DATA\Folder\TimekeepingSystem\obj\TimekeepingSystem.csproj.EntityFrameworkCore.targets'...
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\Khanh\AppData\Local\Temp\tmplxlzpq.tmp /verbosity:quiet /nologo D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj
+Build started...
+dotnet build D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj /verbosity:quiet /nologo /p:PublishAot=false
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:05.41
+Build succeeded.
+dotnet exec --depsfile D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0\TimekeepingSystem.deps.json --additionalprobingpath C:\Users\Khanh\.nuget\packages --additionalprobingpath "C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages" --runtimeconfig D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0\TimekeepingSystem.runtimeconfig.json C:\Users\Khanh\.dotnet\tools\.store\dotnet-ef\8.0.29\dotnet-ef\8.0.29\tools\net8.0\any\tools\netcoreapp2.0\any\ef.dll database update --assembly D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0\TimekeepingSystem.dll --project D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj --startup-assembly D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0\TimekeepingSystem.dll --startup-project D:\DATA\Folder\TimekeepingSystem\TimekeepingSystem.csproj --project-dir D:\DATA\Folder\TimekeepingSystem\ --root-namespace TimekeepingSystem --language C# --framework net8.0 --nullable --working-dir D:\DATA\Folder\TimekeepingSystem --verbose
+Using assembly 'TimekeepingSystem'.
+Using startup assembly 'TimekeepingSystem'.
+Using application base 'D:\DATA\Folder\TimekeepingSystem\bin\Debug\net8.0'.
+Using working directory 'D:\DATA\Folder\TimekeepingSystem'.
+Using root namespace 'TimekeepingSystem'.
+Using project directory 'D:\DATA\Folder\TimekeepingSystem\'.
+Remaining arguments: .
+Finding DbContext classes...
+Finding IDesignTimeDbContextFactory implementations...
+Found IDesignTimeDbContextFactory implementation 'AppDbContextFactory'.
+Found DbContext 'AppDbContext'.
+Finding application service provider in assembly 'TimekeepingSystem'...
+Finding Microsoft.Extensions.Hosting service provider...
+Using environment 'Development'.
+Using application service provider from Microsoft.Extensions.Hosting.
+Finding DbContext classes in the project...
+Using DbContext factory 'AppDbContextFactory'.
+Using context 'AppDbContext'.
+Finding design-time services referenced by assembly 'TimekeepingSystem'...
+Finding design-time services referenced by assembly 'TimekeepingSystem'...
+No referenced design-time services were found.
+Finding design-time services for provider 'Npgsql.EntityFrameworkCore.PostgreSQL'...
+Using design-time services from provider 'Npgsql.EntityFrameworkCore.PostgreSQL'.
+Finding IDesignTimeServices implementations in assembly 'TimekeepingSystem'...
+No design-time services were found.
+Creating DbConnection.
+Created DbConnection. (30ms).
+Opening connection to database 'timekeeping' on server 'tcp://localhost:5432'.
+Opening connection to database 'timekeeping' on server 'tcp://localhost:5432'.
+An error occurred using the connection to database 'timekeeping' on server 'tcp://localhost:5432'.
+'AppDbContext' disposed.
+Disposing connection to database 'timekeeping' on server 'tcp://localhost:5432'.
+Disposed connection to database 'timekeeping' on server 'tcp://localhost:5432' (3ms).
+Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5432
+ ---> System.Net.Sockets.SocketException (10061): No connection could be made because the target machine actively refused it.
+   at Npgsql.Internal.NpgsqlConnector.Connect(NpgsqlTimeout timeout)
+   at Npgsql.Internal.NpgsqlConnector.Connect(NpgsqlTimeout timeout)
+   at Npgsql.Internal.NpgsqlConnector.RawOpen(SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|213_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken, Boolean isFirstAttempt)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenDbConnection(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternal(Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.Open(Boolean errorsExpected)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists()
+   at Microsoft.EntityFrameworkCore.Migrations.HistoryRepository.Exists()
+   at Microsoft.EntityFrameworkCore.Migrations.HistoryRepository.GetAppliedMigrations()
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.Internal.NpgsqlMigrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+Failed to connect to 127.0.0.1:5432
